@@ -7,21 +7,24 @@ import java.util.Scanner;
 
 public class Menu {
 
-    public static final Integer ADD_POST = 1;
-    public static final Integer ADD_MANY_POST = 2;
-    public static final Integer SHOW_ALL_POSTS = 3;
-    public static final Integer DELETE_POST = 4;
+    public static final int ADD_POST = 1;
+    public static final int ADD_MANY_POST = 2;
+    public static final int SHOW_ALL_POSTS = 3;
+    public static final int DELETE_POST = 4;
+    public static final int DELETE_POST_WITH_ID = 5;
 
     public static final String SELECT = "Выберите меню";
     public static final String COUNT = "Выберите количество создаваемых постов";
     public static final String TEXT_OF_POST = "Введите текст";
     public static final String EXIT = "Конец работы";
+    public static final String ID_REQUEST = "Введите id поста";
 
     public static final String MENU = """
                 Введите 1 для создание поста.
                 Введите 2, чтобы создать определенное количество постов.
                 Введите 3, чтобы показать все посты.
                 Введите 4, чтобы удалить все посты.
+                Введите 5, чтобы удалить пост по id.
                 Введите любое другое число для выхода.
             """;
 
@@ -48,7 +51,7 @@ public class Menu {
                 commentGenerator.generate();
                 var post = new Post();
                 post.setText(text);
-                post.setComments(CommentGenerator.getComments());
+                post.setComments(commentGenerator.getComments());
                 var saved = postStore.add(post);
                 System.out.println("Generate: " + saved.getId());
             } else if (ADD_MANY_POST == userChoice) {
@@ -66,10 +69,25 @@ public class Menu {
                 System.out.println();
                 memUsage();
             } else if (SHOW_ALL_POSTS == userChoice) {
-                System.out.println(PostStore.getPosts());
+                System.out.println(postStore.getPosts());
             } else if (DELETE_POST == userChoice) {
                 System.out.println("Удаление всех постов ...");
+                System.out.printf("До удаления: %.2f MB%n", memUsage());
                 postStore.removeAll();
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.printf("После удаления: %.2f MB%n", memUsage());
+            } else if (DELETE_POST_WITH_ID == userChoice) {
+                System.out.println(ID_REQUEST);
+                String id = scanner.nextLine();
+                if (postStore.removeWithId(Integer.parseInt(id))) {
+                    System.out.printf("Пост с id %s удален%n", id);
+                } else {
+                    System.out.printf("Поста с id %s не существует%n", id);
+                }
             } else {
                 run = false;
                 System.out.println(EXIT);
@@ -92,7 +110,7 @@ public class Menu {
         commentGenerator.generate();
         var post = new Post();
         post.setText(text);
-        post.setComments(CommentGenerator.getComments());
+        post.setComments(commentGenerator.getComments());
         postStore.add(post);
     }
 }
