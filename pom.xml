@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.job4j</groupId>
-    <artifactId>job4j_grabber</artifactId>
+    <artifactId>job4j_leak</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>job4j_grabber</name>
+    <name>job4j_leak</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
